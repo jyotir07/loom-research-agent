@@ -28,6 +28,7 @@ async def complete(
     """Run a single completion and return the text."""
     result = await _client.generate(
         provider=provider or settings.llm_provider,
+        modality="text",
         model=model or settings.llm_model,
         prompt=prompt,
         params=params or {},

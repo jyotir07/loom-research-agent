@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse, StreamingResponse
@@ -10,6 +11,7 @@ from api import store
 from models.schemas import ProgressEvent, ResearchJob, ResearchRequest, StageStatus
 from workflows.research_workflow import run_research
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["research"])
 
 
@@ -69,6 +71,7 @@ async def _execute(job: ResearchJob) -> None:
         job.report = report
         job.status = StageStatus.DONE
     except Exception:  # noqa: BLE001 - job-level failure already emitted per-stage
+        logger.exception("Research job %s failed", job.job_id)
         job.status = StageStatus.ERROR
     finally:
         await store.finish(job.job_id)
