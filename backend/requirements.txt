@@ -1,0 +1,17 @@
+# --- Core API ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# --- LLM inference layer ---
+loom-router>=0.1
+
+# --- Validation / settings ---
+pydantic>=2.6
+pydantic-settings>=2.2
+
+# --- HTTP / search ---
+httpx>=0.27
+
+# --- Optional persistence (uncomment when wiring DB/cache) ---
+# asyncpg>=0.29
+# redis>=5.0
