@@ -17,7 +17,6 @@ from config import settings
 # Initialized once; reads provider API keys from the environment.
 _client = AsyncLoom.from_env()
 
-
 async def complete(
     prompt: str,
     *,
