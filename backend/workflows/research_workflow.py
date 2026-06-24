@@ -22,7 +22,8 @@ from agents import (
     WriterAgent,
 )
 from agents.base import BaseAgent, Context
-from models.schemas import ProgressEvent, Report, StageStatus
+from models.schemas import LLMCost, ProgressEvent, Report, StageStatus
+from services import llm
 
 ProgressCallback = Callable[[ProgressEvent], Awaitable[None]]
 
@@ -43,6 +44,10 @@ async def run_research(
     """Execute the full pipeline and return the final Report."""
     ctx: Context = {"topic": topic}
 
+    # Accumulate Loom cost/usage across every agent call in this job. Set here
+    # so the contextvar is shared with the gather() child tasks below.
+    tracker = llm.start_tracking()
+
     async def emit(stage: str, status: StageStatus, message: str | None = None) -> None:
         if on_progress is not None:
             await on_progress(
@@ -59,7 +64,15 @@ async def run_research(
     await _stage(emit, AggregatorAgent(), ctx)
     await _stage(emit, WriterAgent(), ctx)
 
-    return ctx["report"]
+    # Attach the Loom cost rollup to the report.
+    report: Report = ctx["report"]
+    report.cost = LLMCost(**tracker.summary())
+    await emit(
+        "writing",
+        StageStatus.DONE,
+        f"${report.cost.total_usd:.4f} across {report.cost.calls} Loom calls",
+    )
+    return report
 
 
 async def _stage(emit, agent: BaseAgent, ctx: Context) -> None:

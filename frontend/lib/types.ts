@@ -16,10 +16,18 @@ export interface Source {
   snippet?: string | null;
 }
 
+export interface LLMCost {
+  total_usd: number;
+  total_tokens: number;
+  calls: number;
+  by_model: Record<string, number>;
+}
+
 export interface Report {
   topic: string;
   markdown: string;
   sources: Source[];
+  cost?: LLMCost | null;
   created_at: string;
 }
 

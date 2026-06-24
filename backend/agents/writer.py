@@ -28,5 +28,5 @@ class WriterAgent(BaseAgent):
             _PROMPT.format(topic=topic, data=data.model_dump_json(indent=2)),
             params={"max_tokens": 4000},
         )
-        ctx["report"] = Report(topic=topic, markdown=markdown)
+        ctx["report"] = Report(topic=topic, markdown=llm.strip_code_fence(markdown))
         return ctx

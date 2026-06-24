@@ -7,7 +7,41 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { downloadUrl } from "@/lib/api";
-import type { Report } from "@/lib/types";
+import type { LLMCost, Report } from "@/lib/types";
+
+function CostPanel({ cost }: { cost: LLMCost }) {
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm">
+          <span className="font-semibold">Loom usage</span>
+          <span>
+            <span className="text-muted-foreground">Cost </span>
+            <span className="font-mono">${cost.total_usd.toFixed(4)}</span>
+          </span>
+          <span>
+            <span className="text-muted-foreground">Tokens </span>
+            <span className="font-mono">{cost.total_tokens.toLocaleString()}</span>
+          </span>
+          <span>
+            <span className="text-muted-foreground">Calls </span>
+            <span className="font-mono">{cost.calls}</span>
+          </span>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {Object.entries(cost.by_model).map(([model, usd]) => (
+            <span
+              key={model}
+              className="rounded-md border px-2 py-0.5 font-mono text-xs text-muted-foreground"
+            >
+              {model} · ${usd.toFixed(4)}
+            </span>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function ReportView({
   jobId,
@@ -27,6 +61,8 @@ export function ReportView({
           </a>
         </Button>
       </div>
+
+      {report.cost && <CostPanel cost={report.cost} />}
 
       <Card>
         <CardContent className="prose prose-neutral max-w-none pt-6 dark:prose-invert">
