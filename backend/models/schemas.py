@@ -72,12 +72,23 @@ class ResearchData(BaseModel):
 
 
 # --------------------------------------------------------------------------- #
+# Loom cost / usage rollup (surfaced from services/llm.py CostTracker)
+# --------------------------------------------------------------------------- #
+class LLMCost(BaseModel):
+    total_usd: float = 0.0
+    total_tokens: int = 0
+    calls: int = 0
+    by_model: dict[str, float] = Field(default_factory=dict)
+
+
+# --------------------------------------------------------------------------- #
 # Writer output
 # --------------------------------------------------------------------------- #
 class Report(BaseModel):
     topic: str
     markdown: str
     sources: list[Source] = Field(default_factory=list)
+    cost: LLMCost | None = None
     created_at: datetime = Field(default_factory=_now)
 
 
