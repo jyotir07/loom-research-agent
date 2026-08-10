@@ -1,4 +1,4 @@
-# Deep Research Agent
+# Distributed Deep Research Agent
 
 A production-grade AI research system: enter a topic, and a team of AI agents
 collaborates to produce a comprehensive, downloadable research report — with live
