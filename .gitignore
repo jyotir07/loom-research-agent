@@ -51,3 +51,6 @@ memory/loom-is-llm-router-not-agent-framework.md
 
 # ---- TypeScript ----
 *.tsbuildinfo
+
+# ---- Local agent memory ----
+/MEMORY.md
