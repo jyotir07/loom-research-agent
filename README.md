@@ -86,6 +86,16 @@ backend/
 └── api/
     ├── routes.py                # start / stream / fetch / download
     └── store.py                 # in-memory job + progress store
+
+frontend/
+├── app/
+│   ├── page.tsx                 # home: topic form
+│   └── research/[jobId]/page.tsx  # live progress → report
+├── components/                  # topic-form, progress-view, report-view,
+│                                #   theme toggle, ui/ (ShadCN)
+└── lib/
+    ├── api.ts                   # backend client (NEXT_PUBLIC_API_BASE)
+    └── types.ts                 # TS mirrors of the backend schemas
 ```
 
 ## Getting started
@@ -102,6 +112,15 @@ uvicorn main:app --reload          # http://localhost:8000
 ```
 
 API docs are served at `http://localhost:8000/docs`.
+
+Then, in a second terminal:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local         # optional; NEXT_PUBLIC_API_BASE defaults to http://localhost:8000
+npm run dev                        # http://localhost:3000
+```
 
 ## API
 
