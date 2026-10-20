@@ -48,3 +48,6 @@ Thumbs.db
 *.log
 logs/
 memory/loom-is-llm-router-not-agent-framework.md
+
+# ---- TypeScript ----
+*.tsbuildinfo
