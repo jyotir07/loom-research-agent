@@ -63,7 +63,7 @@ demonstrate Loom's cost-optimized model fallback.
 ## Tech stack
 
 - **Backend:** FastAPI · Loom (`loom-router`) · Pydantic · SSE
-- **Frontend:** Next.js · TypeScript · TailwindCSS · ShadCN _(not yet scaffolded)_
+- **Frontend:** Next.js · TypeScript · TailwindCSS · ShadCN
 - **Persistence:** in-memory for now; PostgreSQL/Redis planned
 
 ## Project structure
@@ -133,12 +133,11 @@ curl localhost:8000/api/research/$JOB/download -o report.md
 | Web search | ⏳ Stubbed (returns fake results until `SEARCH_API_KEY` set) |
 | Persistence (Postgres/Redis) | ⏳ In-memory only |
 | PDF / JSON export | ⏳ Markdown only |
-| Frontend (Next.js) | ⏳ Not started |
+| Frontend (Next.js) | ✅ Implemented (topic form, live progress, report view + Markdown download, cost panel, light/dark theme) |
 
 ## Roadmap
 
 - Real web search provider (Tavily/Serper) in `services/search.py`
-- Next.js frontend: Home → live Progress view → Results + downloads
 - Persistence + multi-report history
 - PDF/JSON export
 - Stretch: follow-up questions without re-running the full pipeline, per-fact
