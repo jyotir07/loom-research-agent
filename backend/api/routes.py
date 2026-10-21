@@ -14,12 +14,18 @@ from workflows.research_workflow import run_research
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["research"])
 
+# The event loop only weakly references tasks, so an unreferenced job task can
+# be garbage-collected mid-run. Hold them here until they finish.
+_background_tasks: set[asyncio.Task[None]] = set()
+
 
 @router.post("/research", response_model=ResearchJob)
 async def start_research(req: ResearchRequest) -> ResearchJob:
     """Create a job and run the workflow in the background."""
     job = store.create_job(req.topic)
-    asyncio.create_task(_execute(job))
+    task = asyncio.create_task(_execute(job))
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)
     return job
 
 
