@@ -7,8 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    # Default LLM routing (per-call overridable). Loom reads the actual
-    # provider API keys (OPENAI_API_KEY, etc.) directly from the env.
+    # Intended LLM defaults; not read yet (services/llm.py hardcodes the router
+    # candidates). Loom reads the actual provider API keys (OPENAI_API_KEY,
+    # etc.) directly from the env.
     llm_provider: str = "openai"
     llm_model: str = "gpt-4o-mini"
 

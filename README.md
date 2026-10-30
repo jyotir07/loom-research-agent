@@ -106,7 +106,7 @@ python -m venv .venv
 source .venv/Scripts/activate      # Windows; use .venv/bin/activate on macOS/Linux
 pip install -r requirements.txt
 
-cp .env.example .env               # add at least one provider key (e.g. OPENAI_API_KEY)
+cp .env.example .env               # set OPENAI_API_KEY (the default router only uses OpenAI models)
 
 uvicorn main:app --reload          # http://localhost:8000
 ```
