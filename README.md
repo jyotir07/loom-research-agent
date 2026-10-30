@@ -80,7 +80,7 @@ backend/
 │   └── research_workflow.py     # orchestration: plan → parallel → aggregate → write
 ├── services/
 │   ├── llm.py                   # Loom wrapper (the only Loom touchpoint)
-│   └── search.py                # web search (stubbed until SEARCH_API_KEY set)
+│   └── search.py                # web search: Tavily/Serper (stub without SEARCH_API_KEY)
 ├── models/
 │   └── schemas.py               # Pydantic data contracts + progress events
 └── api/
@@ -149,14 +149,13 @@ curl localhost:8000/api/research/$JOB/download -o report.md
 | --- | --- |
 | Backend skeleton (agents, workflow, API, SSE) | ✅ Implemented |
 | Loom inference wrapper | ✅ Implemented (verify against installed `loom-router`) |
-| Web search | ⏳ Stubbed (returns fake results until `SEARCH_API_KEY` set) |
+| Web search | ✅ Implemented (Tavily/Serper; returns stub results until `SEARCH_API_KEY` set) |
 | Persistence (Postgres/Redis) | ⏳ In-memory only |
 | PDF / JSON export | ⏳ Markdown only |
 | Frontend (Next.js) | ✅ Implemented (topic form, live progress, report view + Markdown download, cost panel, light/dark theme) |
 
 ## Roadmap
 
-- Real web search provider (Tavily/Serper) in `services/search.py`
 - Persistence + multi-report history
 - PDF/JSON export
 - Stretch: follow-up questions without re-running the full pipeline, per-fact
