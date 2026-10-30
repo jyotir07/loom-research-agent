@@ -158,4 +158,6 @@ def _parse_json(text: str) -> Any:
     try:
         return json.loads(text)
     except json.JSONDecodeError as exc:
-        raise ValueError(f"LLM did not return valid JSON: {exc}\n---\n{text[:500]}")
+        raise ValueError(
+            f"LLM did not return valid JSON: {exc}\n---\n{text[:500]}"
+        ) from exc
