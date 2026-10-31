@@ -26,6 +26,7 @@ from models.schemas import LLMCost, ProgressEvent, Report, StageStatus
 from services import llm
 
 ProgressCallback = Callable[[ProgressEvent], Awaitable[None]]
+EmitFn = Callable[..., Awaitable[None]]
 
 # Agents that fan out concurrently after planning.
 RESEARCH_AGENTS: list[BaseAgent] = [
@@ -75,7 +76,7 @@ async def run_research(
     return report
 
 
-async def _stage(emit, agent: BaseAgent, ctx: Context) -> None:
+async def _stage(emit: EmitFn, agent: BaseAgent, ctx: Context) -> None:
     """Run one agent with progress + error reporting around it."""
     await emit(agent.name, StageStatus.RUNNING)
     try:
