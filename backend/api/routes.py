@@ -61,7 +61,7 @@ async def download_report(job_id: str, format: str = "md") -> PlainTextResponse:
     if job is None or job.report is None:
         raise HTTPException(404, "report not ready")
     if format != "md":
-        raise HTTPException(400, "only 'md' supported in skeleton (TODO: pdf/json)")
+        raise HTTPException(400, "unsupported format: only 'md' is available")
     return PlainTextResponse(
         job.report.markdown,
         media_type="text/markdown",
