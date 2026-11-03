@@ -22,16 +22,12 @@ class _EventLog:
 
 _jobs: dict[str, ResearchJob] = {}
 _logs: dict[str, _EventLog] = {}
-# Legacy single-consumer queues, still drained by the SSE route until it moves
-# to subscribe().
-_queues: dict[str, asyncio.Queue[ProgressEvent | None]] = {}
 
 
 def create_job(topic: str) -> ResearchJob:
     job = ResearchJob(topic=topic)
     _jobs[job.job_id] = job
     _logs[job.job_id] = _EventLog()
-    _queues[job.job_id] = asyncio.Queue()
     return job
 
 
@@ -45,9 +41,6 @@ async def publish(event: ProgressEvent) -> None:
         async with log.changed:
             log.events.append(event)
             log.changed.notify_all()
-    queue = _queues.get(event.job_id)
-    if queue is not None:
-        await queue.put(event)
 
 
 async def finish(job_id: str) -> None:
@@ -57,9 +50,6 @@ async def finish(job_id: str) -> None:
         async with log.changed:
             log.finished = True
             log.changed.notify_all()
-    queue = _queues.get(job_id)
-    if queue is not None:
-        await queue.put(None)
 
 
 def subscribe(job_id: str) -> AsyncIterator[ProgressEvent] | None:
@@ -86,7 +76,3 @@ async def _follow(log: _EventLog) -> AsyncIterator[ProgressEvent]:
         seen += len(new)
         if finished:
             return
-
-
-def queue_for(job_id: str) -> asyncio.Queue[ProgressEvent | None] | None:
-    return _queues.get(job_id)
