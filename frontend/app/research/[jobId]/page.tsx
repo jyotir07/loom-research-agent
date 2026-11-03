@@ -43,8 +43,12 @@ export default function ResearchPage() {
     });
 
     es.onerror = () => {
-      es.close();
-      setError("Lost connection to the research stream.");
+      // A transient drop leaves the stream CONNECTING while the browser
+      // retries; the backend replays history on reconnect, so only CLOSED
+      // (e.g. a 404) is fatal.
+      if (es.readyState === EventSource.CLOSED) {
+        setError("Lost connection to the research stream.");
+      }
     };
 
     return () => es.close();
