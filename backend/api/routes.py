@@ -39,18 +39,15 @@ async def get_research(job_id: str) -> ResearchJob:
 
 @router.get("/research/{job_id}/stream")
 async def stream_research(job_id: str) -> StreamingResponse:
-    """Server-Sent Events stream of progress updates."""
-    queue = store.queue_for(job_id)
-    if queue is None:
+    """Server-Sent Events stream of progress updates, replayed from the start."""
+    events = store.subscribe(job_id)
+    if events is None:
         raise HTTPException(404, "job not found")
 
     async def event_source():
-        while True:
-            event = await queue.get()
-            if event is None:  # end-of-stream sentinel
-                yield "event: done\ndata: {}\n\n"
-                break
+        async for event in events:
             yield f"data: {event.model_dump_json()}\n\n"
+        yield "event: done\ndata: {}\n\n"
 
     return StreamingResponse(event_source(), media_type="text/event-stream")
 
